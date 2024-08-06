@@ -1,6 +1,6 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { randomUUID } from 'crypto';
 import { Deposite } from 'src/entities/deposite.entity';
 import { DepositeBreakdown } from 'src/entities/deposite-breakdown.entity';
@@ -19,18 +19,43 @@ export class DepositeService {
 
   }
 
-  async getAll() {
-    const data = await this.depositeRepository.find();
+  async getAll(activeUser: any) {
+    let filter: any = {
+      relations: ['district', 'source_of_revenue']
+    }
+
+    if (activeUser.role === Role.SPESIALIS_KEUANGAN) {
+      const districtIds = activeUser.districts.map((item: any) => item.district.id); 
+
+      filter.where = {
+        district: { id: In(districtIds) },
+      }
+    }
+
+    const data = await this.depositeRepository.find(filter);
 
     return data;
   }
 
-  async getSingle(id: string) {
-    const data = await this.depositeRepository.findOne({
+  async getSingle(activeUser: any, id: string) {
+    let filter: any = {
       where: {
         id
-      }
-    });
+      },
+      relations: ['district', 'source_of_revenue', 'breakdown', 'breakdown.deposite_area']
+    }
+
+    if (activeUser.role === Role.SPESIALIS_KEUANGAN) {
+      const districtIds = activeUser.districts.map((item: any) => item.district.id); 
+
+      filter.where.district = { id: In(districtIds) };
+    }
+  
+    const data = await this.depositeRepository.findOne(filter);
+
+    if(!data) {
+      throw new NotFoundException('data not found');
+    }
 
     return data;
   }
@@ -81,7 +106,7 @@ export class DepositeService {
     return deposite;
   }
 
-  async update(id: string, activeUser: any, data: any): Promise<any> {
+  async update(activeUser: any, id: string, data: any): Promise<any> {
     if (activeUser.role === Role.SPESIALIS_KEUANGAN) {
       const userDistrict = await this.userDistrictRepository.findOne({
         where: {
@@ -128,26 +153,20 @@ export class DepositeService {
     await Promise.all(depositeBrakedownPromise);
 
     return deposite;
-
-    await this.depositeRepository.update({
-      id
-      },{
-        district: data.district,
-        source_of_revenue: data.source_of_revenue,
-        amount: data.amount,
-        date: data.date
-    });
-
-    return {
-      message: 'update success!',
-          data: [{
-              id
-          }]
-    }
   }
 
-  async delete(id: string): Promise<any> {
-    await this.depositeRepository.delete({ id });
+  async delete(activeUser: any, id: string): Promise<any> {
+    let filter: any = {
+      id
+    }
+
+    if (activeUser.role === Role.SPESIALIS_KEUANGAN) {
+      const districtIds = activeUser.districts.map((item: any) => item.district.id); 
+
+      filter.district = { id: In(districtIds) };
+    }
+
+    await this.depositeRepository.delete(filter);
 
     return {
       message: 'delete success!',

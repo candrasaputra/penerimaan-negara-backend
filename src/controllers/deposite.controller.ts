@@ -13,18 +13,27 @@ export class DepositeController {
   ) {}
 
   @Get('/')
-  async getAll() {
+  async getAll(
+    @Req() request: any
+  ) {
     try {
-      return this.depositeService.getAll();
+      const user = await request.user;
+
+      return this.depositeService.getAll(user);
     } catch (e) {
       throw new UnauthorizedException();
     }
   }
 
   @Get('/:id')
-  async getSingle(@Param('id') id: string) {
+  async getSingle(
+    @Param('id') id: string,
+    @Req() request: any
+  ) {
     try {
-      return this.depositeService.getSingle(id);
+      const user = await request.user;
+
+      return this.depositeService.getSingle(user, id);
     } catch (e) {
       throw new UnauthorizedException();
     }
@@ -59,7 +68,7 @@ export class DepositeController {
     try {
       const user = await request.user;
 
-      return this.depositeService.update(id, user, { district, source_of_revenue, amount, date });
+      return this.depositeService.update(user, id, { district, source_of_revenue, amount, date });
     } catch (e) {
       throw new UnauthorizedException();
     }
@@ -67,10 +76,13 @@ export class DepositeController {
 
   @Delete('/:id')
   async delete(
-    @Param('id') id: string
+    @Param('id') id: string,
+    @Req() request: any
   ) {
     try {
-      return this.depositeService.delete(id);
+      const user = await request.user;
+
+      return this.depositeService.delete(user, id);
     } catch (e) {
       throw new UnauthorizedException();
     }

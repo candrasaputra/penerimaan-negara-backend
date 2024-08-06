@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { SourceOfRevenue } from './source-of-revenue.entity';
 import { District } from './district.entity';
+import { DepositeBreakdown } from './deposite-breakdown.entity';
 
 @Entity()
 export class Deposite {
@@ -28,4 +29,7 @@ export class Deposite {
 
   @Column()
   date?: Date | null | undefined;
+
+  @OneToMany(() => DepositeBreakdown, (db) => db.deposite)
+    breakdown?: DepositeBreakdown[] | undefined;
 }

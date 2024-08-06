@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { randomUUID } from 'crypto';
@@ -14,7 +14,9 @@ export class UserService {
   }
 
   async getAll() {
-    const user = await this.userRepository.find();
+    const user = await this.userRepository.find({
+      select: ['id', 'username', 'name', 'role']
+    });
 
     return user;
   }
@@ -26,6 +28,12 @@ export class UserService {
       }
     });
 
+    if(!user) {
+      throw new NotFoundException('data not found');
+    }
+  
+    delete user.password;
+
     return user;
   }
 
@@ -35,7 +43,7 @@ export class UserService {
     }
 
     if (isNaN(Number(data.username.length))) {
-      throw new BadRequestException('username shouldbe number');
+      throw new BadRequestException('username should be number');
     }
 
     const hasedPassword = await bcrypt.hash(data.password, 12);
@@ -54,7 +62,7 @@ export class UserService {
     }
 
     if (isNaN(Number(data.username.length))) {
-      throw new BadRequestException('username shouldbe number');
+      throw new BadRequestException('username should be number');
     }
   
     const payload: any = {

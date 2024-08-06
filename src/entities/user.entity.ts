@@ -1,6 +1,7 @@
 
+import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
 import { Role } from '../enums/role.enum';
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { UserDistrict } from './user-district.entity';
 
 @Entity()
 export class User {
@@ -18,4 +19,7 @@ export class User {
 
   @Column({default: Role.SPESIALIS_KEUANGAN})
   role: Role;
+
+  @OneToMany(() => UserDistrict, (tp) => tp.user)
+    districts?: UserDistrict[] | undefined;
 }

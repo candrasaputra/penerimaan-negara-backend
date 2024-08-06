@@ -59,7 +59,8 @@ export class AuthService {
       data = await this.jwtServ.verifyAsync(cookie);
 
       const user = await this.userRepository.findOne({
-        where: {id: data['id']}
+        where: {id: data['id']},
+        relations: ['districts', 'districts.district']
       });
 
       delete user.password;

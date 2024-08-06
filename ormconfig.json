@@ -1,0 +1,11 @@
+{
+    "type": "mssql",
+    "host": "157.230.254.122",
+    "port": 1433,
+    "username": "sa",
+    "password": "YourPassword!",
+    "database": "master",
+    "entities": ["dist/**/*.entity{.ts,.js}"],
+    "synchronize": true
+  }
+  

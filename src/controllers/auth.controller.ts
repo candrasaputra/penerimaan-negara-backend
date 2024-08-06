@@ -6,7 +6,7 @@ import RoleGuard from '../guards/role.guard';
 import { Role } from '../enums/role.enum';
 import { AuthGuard } from '../guards/auth.guard';
 
-@Controller('api')
+@Controller('api/auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
@@ -19,12 +19,13 @@ export class AuthController {
       @Res({passthrough: true}) response: Response
   ) {
 
-        const jwt = await this.authService.login(username, password);
+        const login = await this.authService.login(username, password);
 
-        response.cookie('jwt', jwt, {httpOnly: true}); 
+        response.cookie('jwt', login.token, {httpOnly: true}); 
 
         return {
-            message: 'success'
+            message: 'success',
+            data: login
         };
   }
 

@@ -41,7 +41,15 @@ export class AuthService {
 
     const jwt = await this.jwtServ.signAsync({id: user.id});
 
-    return jwt;
+    return {
+      token: jwt,
+      user: {
+        id: user.id,
+        username: user.username,
+        name: user.name,
+        role: user.role
+      }
+    };
   }
 
   async validateToken(cookie: any): Promise<any> {

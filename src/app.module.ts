@@ -30,6 +30,8 @@ import { DepositeService } from './services/deposite.service';
 import { DepositeController } from './controllers/deposite.controller';
 import { DistrictController } from './controllers/district.controller';
 import { DistrictService } from './services/district.service';
+import { ReportService } from './services/report.service';
+import { ReportController } from './controllers/report.controller';
 
 @Module({
   imports: [
@@ -54,7 +56,7 @@ import { DistrictService } from './services/district.service';
       signOptions: {expiresIn: '1h'}
     }),
   ],
-  controllers: [AuthController, CategoryController, UserController, DepositeAreaController, SeedController, SourceOfRevenueController, UserDistrictController, DepositeController, DistrictController],
-  providers: [AuthService, CategoryService, UserService, DepositeAreaService, SeedService, SourceOfRevenueService, UserDistrictService, DepositeService, DistrictService],
+  controllers: [AuthController, CategoryController, UserController, DepositeAreaController, SeedController, SourceOfRevenueController, UserDistrictController, DepositeController, DistrictController, ReportController],
+  providers: [AuthService, CategoryService, UserService, DepositeAreaService, SeedService, SourceOfRevenueService, UserDistrictService, DepositeService, DistrictService, ReportService],
 })
 export class AppModule {}

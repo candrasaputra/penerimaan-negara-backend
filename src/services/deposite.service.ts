@@ -19,6 +19,17 @@ export class DepositeService {
 
   }
 
+  async depositeMonthly(year: number) {
+    const result = await this.depositeRepository.createQueryBuilder('d')
+    .select('DATEPART(MONTH, d.date)', 'month')
+    .addSelect('SUM(d.amount)', 'total')
+    .where('YEAR(d.date) = :year', { year })
+    .groupBy('DATEPART(MONTH, d.date)')
+    .getRawMany();
+
+    return result;
+  }
+
   async getAll(activeUser: any) {
     let filter: any = {
       relations: ['district', 'source_of_revenue']

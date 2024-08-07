@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UnauthorizedException, UseGuards, Query } from '@nestjs/common';
 import RoleGuard from '../guards/role.guard';
 import { Role } from '../enums/role.enum';
 import { AuthGuard } from '../guards/auth.guard';
@@ -20,6 +20,18 @@ export class DepositeController {
       const user = await request.user;
 
       return this.depositeService.getAll(user);
+    } catch (e) {
+      throw new UnauthorizedException();
+    }
+  }
+
+  @Get('/deposite-monthly')
+  async depositeMonthly(
+    @Query('year') year: number
+  ) {
+
+    try {
+      return this.depositeService.depositeMonthly(year);
     } catch (e) {
       throw new UnauthorizedException();
     }

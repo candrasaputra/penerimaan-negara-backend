@@ -5,14 +5,14 @@ import { AuthGuard } from '../guards/auth.guard';
 import { SourceOfRevenueService } from 'src/services/source-of-revenue.service';
 
 @Controller('api/source-of-revenue')
-@UseGuards(RoleGuard([Role.AM_PPN]))
-@UseGuards(AuthGuard)
 export class SourceOfRevenueController {
   constructor(
     private readonly sourceOfRevenueService: SourceOfRevenueService,
   ) {}
 
   @Get('/')
+  @UseGuards(RoleGuard([Role.AM_PPN, Role.SPESIALIS_KEUANGAN]))
+  @UseGuards(AuthGuard)
   async getAll() {
     try {
       return this.sourceOfRevenueService.getAll();
@@ -22,6 +22,8 @@ export class SourceOfRevenueController {
   }
 
   @Get('/:id')
+  @UseGuards(RoleGuard([Role.AM_PPN, Role.SPESIALIS_KEUANGAN]))
+  @UseGuards(AuthGuard)
   async getSingle(@Param('id') id: string) {
     try {
       return this.sourceOfRevenueService.getSingle(id);
@@ -31,6 +33,8 @@ export class SourceOfRevenueController {
   }
 
   @Post('/')
+  @UseGuards(RoleGuard([Role.AM_PPN]))
+  @UseGuards(AuthGuard)
   async create(
     @Body('name') name: string,
     @Body('category') category: string,
@@ -44,6 +48,8 @@ export class SourceOfRevenueController {
   }
 
   @Patch('/:id')
+  @UseGuards(RoleGuard([Role.AM_PPN]))
+  @UseGuards(AuthGuard)
   async update(
     @Param('id') id: string,
     @Body('name') name?: string,
@@ -58,6 +64,8 @@ export class SourceOfRevenueController {
   }
 
   @Delete('/:id')
+  @UseGuards(RoleGuard([Role.AM_PPN]))
+  @UseGuards(AuthGuard)
   async delete(
     @Param('id') id: string
   ) {

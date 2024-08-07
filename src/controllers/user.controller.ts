@@ -37,7 +37,6 @@ export class UserController {
     @Body('username') username: string,
     @Body('password') password: string,
     @Body('role') role: string
-
   ) {
     try {
       return this.userService.create({ name, username, password, role });

@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryColumn, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryColumn, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Province } from './province.entity';
+import { UserDistrict } from './user-district.entity';
 
 @Entity()
 export class District {
@@ -16,4 +17,7 @@ export class District {
   })
   @JoinColumn({ name: 'province_id' })
   province: Province | string | undefined;
+
+  @OneToMany(() => UserDistrict, (tp) => tp.district)
+    users?: UserDistrict[] | undefined;
 }

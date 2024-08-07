@@ -22,4 +22,18 @@ export class ReportController {
       throw new UnauthorizedException();
     }
   }
+
+  @Get('/summary-breakdown')
+  @UseGuards(RoleGuard([Role.AM_PPN, Role.SPESIALIS_KEUANGAN]))
+  @UseGuards(AuthGuard)
+  async summaryBrakedown(
+    @Query('year') year: number,
+    @Query('deposite_area') deposite_area: string
+  ) {
+    try {
+      return this.reportService.summaryBreakdown(year, deposite_area);
+    } catch (e) {
+      throw new UnauthorizedException();
+    }
+  }
 }

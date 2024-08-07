@@ -13,7 +13,9 @@ export class SourceOfRevenueService {
   }
 
   async getAll() {
-    const data = await this.sourceOfRevenueRepository.find();
+    const data = await this.sourceOfRevenueRepository.find({
+      relations: ['category']
+    });
 
     return data;
   }

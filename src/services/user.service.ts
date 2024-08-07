@@ -25,7 +25,8 @@ export class UserService {
     const user = await this.userRepository.findOne({
       where: {
         id
-      }
+      },
+      relations: ['districts', 'districts.district']
     });
 
     if(!user) {
@@ -42,7 +43,7 @@ export class UserService {
       throw new BadRequestException('username minimum 10 digits');
     }
 
-    if (isNaN(Number(data.username.length))) {
+    if (isNaN(Number(data.username))) {
       throw new BadRequestException('username should be number');
     }
 
@@ -52,7 +53,8 @@ export class UserService {
       id: randomUUID(),
       name: data.name,
       username: data.username,
-      password: hasedPassword
+      password: hasedPassword,
+      role: data.role
     });
   }
 

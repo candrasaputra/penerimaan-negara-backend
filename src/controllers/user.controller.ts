@@ -35,10 +35,12 @@ export class UserController {
   async create(
     @Body('name') name: string,
     @Body('username') username: string,
-    @Body('password') password: string
+    @Body('password') password: string,
+    @Body('role') role: string
+
   ) {
     try {
-      return this.userService.create({ name, username, password });
+      return this.userService.create({ name, username, password, role });
     } catch (e) {
       throw new UnauthorizedException();
     }

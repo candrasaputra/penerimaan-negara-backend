@@ -1,27 +1,33 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UnauthorizedException, UseGuards, Req } from '@nestjs/common';
 import RoleGuard from '../guards/role.guard';
 import { Role } from '../enums/role.enum';
 import { AuthGuard } from '../guards/auth.guard';
 import { UserDistrictService } from 'src/services/user-district.service';
 
 @Controller('api/user-district')
-@UseGuards(RoleGuard([Role.AM_PPN]))
-@UseGuards(AuthGuard)
 export class UserDistrictController {
   constructor(
     private readonly userDistrictService: UserDistrictService,
   ) {}
 
   @Get('/')
-  async getAll() {
+  @UseGuards(RoleGuard([Role.AM_PPN, Role.SPESIALIS_KEUANGAN]))
+  @UseGuards(AuthGuard)
+  async getAll(
+    @Req() request: any
+  ) {
     try {
-      return this.userDistrictService.getAll();
+      const user = await request.user;
+
+      return this.userDistrictService.getAll(user);
     } catch (e) {
       throw new UnauthorizedException();
     }
   }
 
   @Get('/:id')
+  @UseGuards(RoleGuard([Role.AM_PPN, Role.SPESIALIS_KEUANGAN]))
+  @UseGuards(AuthGuard)
   async getSingle(@Param('id') id: string) {
     try {
       return this.userDistrictService.getSingle(id);
@@ -31,6 +37,8 @@ export class UserDistrictController {
   }
 
   @Post('/')
+  @UseGuards(RoleGuard([Role.AM_PPN]))
+  @UseGuards(AuthGuard)
   async create(
     @Body('name') name: string,
     @Body('user') user: string,
@@ -44,6 +52,8 @@ export class UserDistrictController {
   }
 
   @Patch('/:id')
+  @UseGuards(RoleGuard([Role.AM_PPN]))
+  @UseGuards(AuthGuard)
   async update(
     @Param('id') id: string,
     @Body('user') user: string,
@@ -57,6 +67,8 @@ export class UserDistrictController {
   }
 
   @Delete('/:id')
+  @UseGuards(RoleGuard([Role.AM_PPN]))
+  @UseGuards(AuthGuard)
   async delete(
     @Param('id') id: string
   ) {

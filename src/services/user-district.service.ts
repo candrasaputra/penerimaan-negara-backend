@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { randomUUID } from 'crypto';
 import { UserDistrict } from 'src/entities/user-district.entity';
+import { Role } from 'src/enums/role.enum';
 
 @Injectable()
 export class UserDistrictService {
@@ -12,8 +13,20 @@ export class UserDistrictService {
 
   }
 
-  async getAll() {
-    const data = await this.userDistrictRepository.find();
+  async getAll(activeUser) {
+    let filter: any = {
+      relations: ['district']
+    }
+
+    if (activeUser.role === Role.SPESIALIS_KEUANGAN) {
+      const districtIds = activeUser.districts.map((item: any) => item.district.id); 
+
+      filter.where = {
+        district: { id: In(districtIds) },
+      }
+    }
+
+    const data = await this.userDistrictRepository.find(filter);
 
     return data;
   }

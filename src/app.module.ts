@@ -34,11 +34,11 @@ import { DepositeController } from './controllers/deposite.controller';
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mssql',
-      host: '157.230.254.122',
+      host: process.env.DBHOST,
       port: 1433,
-      username: 'sa',
-      password: 'YourPassword!',
-      database: 'master',
+      username: process.env.DBUSERNAME,
+      password: process.env.DBPASSWORD,
+      database: process.env.DBNAME,
       entities: [User, Province, District, Category, DepositeArea, SourceOfRevenue, Deposite, DepositeBreakdown, AllocationPercentage, UserDistrict],
       synchronize: true,
       options: {
@@ -48,7 +48,7 @@ import { DepositeController } from './controllers/deposite.controller';
     }),
     TypeOrmModule.forFeature([User, Province, District, Category, DepositeArea, SourceOfRevenue, Deposite, DepositeBreakdown, AllocationPercentage, UserDistrict]),
     JwtModule.register({
-      secret: 'secret',
+      secret: process.env.JWT_SECRET || 'secret',
       signOptions: {expiresIn: '1h'}
     }),
   ],

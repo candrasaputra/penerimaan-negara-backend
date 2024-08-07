@@ -5,14 +5,14 @@ import { AuthGuard } from '../guards/auth.guard';
 import { DepositeAreaService } from 'src/services/deposite-area.service';
 
 @Controller('api/deposite-area')
-@UseGuards(RoleGuard([Role.AM_PPN]))
-@UseGuards(AuthGuard)
 export class DepositeAreaController {
   constructor(
     private readonly depositeAreaService: DepositeAreaService,
   ) {}
 
   @Get('/')
+  @UseGuards(RoleGuard([Role.AM_PPN, Role.SPESIALIS_KEUANGAN]))
+  @UseGuards(AuthGuard)
   async getAll() {
     try {
       return this.depositeAreaService.getAll();
@@ -22,6 +22,8 @@ export class DepositeAreaController {
   }
 
   @Get('/:id')
+  @UseGuards(RoleGuard([Role.AM_PPN, Role.SPESIALIS_KEUANGAN]))
+  @UseGuards(AuthGuard)
   async getSingle(@Param('id') id: string) {
     try {
       return this.depositeAreaService.getSingle(id);
@@ -31,6 +33,8 @@ export class DepositeAreaController {
   }
 
   @Post('/')
+  @UseGuards(RoleGuard([Role.AM_PPN]))
+  @UseGuards(AuthGuard)
   async create(@Body('name') name: string) {
     try {
       return this.depositeAreaService.create({ name });
@@ -40,6 +44,8 @@ export class DepositeAreaController {
   }
 
   @Patch('/:id')
+  @UseGuards(RoleGuard([Role.AM_PPN]))
+  @UseGuards(AuthGuard)
   async update(
     @Param('id') id: string,
     @Body('name') name: string
@@ -52,6 +58,8 @@ export class DepositeAreaController {
   }
 
   @Delete('/:id')
+  @UseGuards(RoleGuard([Role.AM_PPN]))
+  @UseGuards(AuthGuard)
   async delete(
     @Param('id') id: string
   ) {
